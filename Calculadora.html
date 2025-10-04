@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Simples</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .calc-container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      padding: 30px 20px;
+      width: 300px;
+    }
+    .display {
+      width: 100%;
+      height: 40px;
+      font-size: 1.5em;
+      text-align: right;
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #eee;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    button {
+      height: 40px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 4px;
+      background: #e0e0e0;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    button:hover {
+      background: #d0d0d0;
+    }
+    .btn-op {
+      background: #ffd700;
+    }
+    .btn-eq {
+      background: #4caf50;
+      color: #fff;
+    }
+    .btn-clear {
+      background: #f44336;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="calc-container">
+    <input type="text" class="display" id="display" disabled value="0">
+    <div class="buttons">
+      <button onclick="addNum('7')">7</button>
+      <button onclick="addNum('8')">8</button>
+      <button onclick="addNum('9')">9</button>
+      <button class="btn-op" onclick="addOp('/')">÷</button>
+      <button onclick="addNum('4')">4</button>
+      <button onclick="addNum('5')">5</button>
+      <button onclick="addNum('6')">6</button>
+      <button class="btn-op" onclick="addOp('*')">×</button>
+      <button onclick="addNum('1')">1</button>
+      <button onclick="addNum('2')">2</button>
+      <button onclick="addNum('3')">3</button>
+      <button class="btn-op" onclick="addOp('-')">−</button>
+      <button onclick="addNum('0')">0</button>
+      <button onclick="addDot()">.</button>
+      <button class="btn-clear" onclick="clearDisplay()">C</button>
+      <button class="btn-op" onclick="addOp('+')">+</button>
+      <button class="btn-eq" style="grid-column: span 4;" onclick="calculate()">=</button>
+    </div>
+  </div>
+  <script>
+    let current = '';
+    let resetNext = false;
+    function updateDisplay(val) {
+      document.getElementById('display').value = val || '0';
+    }
+    function addNum(num) {
+      if (resetNext) {
+        current = '';
+        resetNext = false;
+      }
+      current += num;
+      updateDisplay(current);
+    }
+    function addOp(op) {
+      if (resetNext) resetNext = false;
+      if (current === '') return;
+      if (/[+\-*/]$/.test(current)) {
+        current = current.slice(0, -1) + op;
+      } else {
+        current += op;
+      }
+      updateDisplay(current);
+    }
+    function addDot() {
+      if (resetNext) {
+        current = '';
+        resetNext = false;
+      }
+      // Prevent multiple dots in the same number
+      let parts = current.split(/[+\-*/]/);
+      let last = parts[parts.length - 1];
+      if (!last.includes('.')) {
+        current += '.';
+        updateDisplay(current);
+      }
+    }
+    function clearDisplay() {
+      current = '';
+      updateDisplay('0');
+    }
+    function calculate() {
+      try {
+        let result = eval(current);
+        updateDisplay(result);
+        current = result.toString();
+        resetNext = true;
+      } catch (e) {
+        updateDisplay('Erro');
+        current = '';
+        resetNext = true;
+      }
+    }
+  </script>
+</body>
+</html>
